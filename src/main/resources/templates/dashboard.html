@@ -1,0 +1,419 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>Admin Dashboard - Planting</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<nav class="navbar navbar-dark bg-dark">-->
+<!--    <div class="container-fluid">-->
+<!--        <a class="navbar-brand" href="#">Admin Dashboard</a>-->
+<!--        <form action="/logout" method="post">-->
+<!--            <button type="submit" class="btn btn-outline-light">Logout</button>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<!--<div class="container py-4">-->
+<!--    <h2 class="text-center mb-4">🌱 Admin Dashboard - Planting</h2>-->
+
+<!--    &lt;!&ndash; ✅ Add / Edit Product Form &ndash;&gt;-->
+<!--    <div class="card mb-4">-->
+<!--        <div class="card-header bg-success text-white">-->
+<!--            <h5 th:text="${product.id == null} ? 'Add New Product' : 'Edit Product'"></h5>-->
+<!--        </div>-->
+<!--        <div class="card-body">-->
+<!--            <form th:action="${product.id == null} ? @{/admin/add-product} : @{/admin/update-product}"-->
+<!--                  th:object="${product}" method="post" enctype="multipart/form-data">-->
+
+<!--            <input type="hidden" th:field="*{id}"/>-->
+
+<!--                <div class="row mb-3">-->
+<!--                    <div class="col">-->
+<!--                        <label>Name:</label>-->
+<!--                        <input type="text" class="form-control" th:field="*{name}" required/>-->
+<!--                    </div>-->
+<!--                    <div class="col">-->
+<!--                        <label>Category:</label>-->
+<!--                        <select class="form-select" th:field="*{category}" required>-->
+<!--                            <option value="">&#45;&#45; Select Category &#45;&#45;</option>-->
+<!--                            <optgroup label="Categories">-->
+<!--                                <option value="Balcony Garden">Balcony Garden</option>-->
+<!--                                <option value="Living Garden">Living Garden</option>-->
+<!--                                <option value="Terrace Garden">Terrace Garden</option>-->
+<!--                                <option value="Kitchen Garden">Kitchen Garden</option>-->
+<!--                            </optgroup>-->
+<!--                            <optgroup label="Planters">-->
+<!--                                <option value="Resin Pots">Resin Pots</option>-->
+<!--                                <option value="Self Watering Pots">Self Watering Pots</option>-->
+<!--                                <option value="Plastic Pots">Plastic Pots</option>-->
+<!--                                <option value="Ceramic Pots">Ceramic Pots</option>-->
+<!--                            </optgroup>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="row mb-3">-->
+<!--                    <div class="col">-->
+<!--                        <label>Price:</label>-->
+<!--                        <input type="number" step="0.01" class="form-control" th:field="*{price}" required/>-->
+<!--                    </div>-->
+<!--                    <div class="col">-->
+<!--                        <label>Label (e.g. New Launch):</label>-->
+<!--                        <select class="form-select" th:field="*{label}" required>-->
+<!--                            <option value="">&#45;&#45; Select Label &#45;&#45;</option>-->
+<!--                            <option value="Best Seller">Best Seller</option>-->
+<!--                            <option value="New Launch">New Launch</option>-->
+<!--                            <option value="Indoor">Indoor</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="row mb-3 align-items-center">-->
+<!--                    &lt;!&ndash; 🔵 Left Side: Preview Image &ndash;&gt;-->
+<!--                    <div class="col-md-6 text-center">-->
+<!--                        <div th:if="${product.imageData != null}">-->
+<!--                            <img th:src="@{'/product/image/' + ${product.id}}" class="rounded-circle shadow" width="150" height="150" alt="Preview"/>-->
+<!--                        </div>-->
+<!--                        <div th:if="${product.imageData == null}">-->
+<!--                            <div class="text-muted">No image available</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; 🟢 Right Side: Upload Input &ndash;&gt;-->
+<!--                    <div class="col-md-6">-->
+<!--                        <label>Upload Image:</label>-->
+<!--                        <input type="file" name="imageFile" class="form-control" accept="image/png, image/jpeg, image/jpg"/>-->
+<!--                        <small th:if="${product.id != null}" class="text-muted">Leave empty to keep existing image.</small>-->
+<!--                    </div>-->
+<!--                    <div class="text-end mt-3">-->
+<!--                        <button type="submit" class="btn btn-success w-25" th:text="${product.id == null} ? 'Add' : 'Update'"></button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; ✅ Product List Table &ndash;&gt;-->
+<!--    <div class="card">-->
+<!--        <div class="card-header bg-dark text-white">-->
+<!--            <h5 class="text-center">All Products</h5>-->
+<!--        </div>-->
+<!--        <div class="card-body p-0">-->
+<!--            <div class="p-3 d-flex flex-wrap gap-3">-->
+<!--                &lt;!&ndash; 🔍 Text Search &ndash;&gt;-->
+<!--                <input type="text" id="productSearch" class="form-control" placeholder="Search by name, category, label..." style="max-width: 60%;">-->
+
+<!--                &lt;!&ndash; 🔽 Category Filter &ndash;&gt;-->
+<!--                <select id="categoryFilter" class="form-select" style="max-width: 200px;">-->
+<!--                    <option value="">All Categories</option>-->
+<!--                    <option value="Balcony Garden">Balcony Garden</option>-->
+<!--                    <option value="Living Garden">Living Garden</option>-->
+<!--                    <option value="Terrace Garden">Terrace Garden</option>-->
+<!--                    <option value="Kitchen Garden">Kitchen Garden</option>-->
+<!--                    <option value="Resin Pots">Resin Pots</option>-->
+<!--                    <option value="Self Watering Pots">Self Watering Pots</option>-->
+<!--                    <option value="Plastic Pots">Plastic Pots</option>-->
+<!--                    <option value="Ceramic Pots">Ceramic Pots</option>-->
+<!--                </select>-->
+
+<!--                &lt;!&ndash; 🔽 Label Filter &ndash;&gt;-->
+<!--                <select id="labelFilter" class="form-select" style="max-width: 200px;">-->
+<!--                    <option value="">All Labels</option>-->
+<!--                    <option value="Best Seller">Best Seller</option>-->
+<!--                    <option value="New Launch">New Launch</option>-->
+<!--                    <option value="Indoor">Indoor</option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            <table class="table table-bordered table-striped m-0">-->
+<!--                <thead class="table">-->
+<!--                <tr class="text-center align-middle">-->
+<!--                    <th>#</th>-->
+<!--                    <th>Image</th>-->
+<!--                    <th>Name</th>-->
+<!--                    <th>Category</th>-->
+<!--                    <th>Label</th>-->
+<!--                    <th>Price</th>-->
+<!--                    <th width="150">Action</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr th:each="prod, stat : ${products}" class="text-center align-middle">-->
+<!--                    <td th:text="${stat.count}">1</td>-->
+<!--                    <td>-->
+<!--                        <img class="rounded-circle mx-auto d-block" th:if="${prod.imageData != null}" th:src="@{'/product/image/' + ${prod.id}}" width="60" height="60"/>-->
+<!--                        <span th:if="${prod.imageData == null}" class="text-muted">No Image</span>-->
+<!--                    </td>-->
+<!--                    <td th:text="${prod.name}">Name</td>-->
+<!--                    <td th:text="${prod.category}">Category</td>-->
+<!--                    <td th:text="${prod.label}">Label</td>-->
+<!--                    <td>₹ <span th:text="${prod.price}">0.00</span></td>-->
+<!--                    <td>-->
+<!--                        <a th:href="@{'/admin/edit/' + ${prod.id}}" class="btn btn-sm btn-warning">Edit</a>-->
+<!--                        <a th:href="@{'/admin/delete/' + ${prod.id}}"-->
+<!--                           onclick="return confirm('Delete this product?')"-->
+<!--                           class="btn btn-sm btn-danger">Delete</a>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                <tr th:if="${products.size() == 0}">-->
+<!--                    <td colspan="7" class="text-center text-muted">No products available.</td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--</div>-->
+
+<!--</body>-->
+<!--<script>-->
+<!--    const searchInput = document.getElementById('productSearch');-->
+<!--    const categoryFilter = document.getElementById('categoryFilter');-->
+<!--    const labelFilter = document.getElementById('labelFilter');-->
+
+<!--    function filterTable() {-->
+<!--        const searchText = searchInput.value.toLowerCase();-->
+<!--        const selectedCategory = categoryFilter.value.toLowerCase();-->
+<!--        const selectedLabel = labelFilter.value.toLowerCase();-->
+
+<!--        const rows = document.querySelectorAll("table tbody tr");-->
+
+<!--        rows.forEach(row => {-->
+<!--            const rowText = row.innerText.toLowerCase();-->
+<!--            const category = row.children[3].innerText.toLowerCase();-->
+<!--            const label = row.children[4].innerText.toLowerCase();-->
+
+<!--            const matchesSearch = rowText.includes(searchText);-->
+<!--            const matchesCategory = selectedCategory === "" || category === selectedCategory;-->
+<!--            const matchesLabel = selectedLabel === "" || label === selectedLabel;-->
+
+<!--            if (matchesSearch && matchesCategory && matchesLabel) {-->
+<!--                row.style.display = "";-->
+<!--            } else {-->
+<!--                row.style.display = "none";-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+<!--    searchInput.addEventListener('input', filterTable);-->
+<!--    categoryFilter.addEventListener('change', filterTable);-->
+<!--    labelFilter.addEventListener('change', filterTable);-->
+<!--</script>-->
+
+<!--</html>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard - Planting</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Admin Dashboard</a>
+        <form action="/logout" method="post">
+            <button type="submit" class="btn btn-outline-light">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <h2 class="text-center mb-4">🌱 Admin Dashboard - Planting</h2>
+
+    <!-- ✅ Add / Edit Product Form -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 th:text="${product.id == null} ? 'Add New Product' : 'Edit Product'"></h5>
+        </div>
+        <div class="card-body">
+            <form th:action="${product.id == null} ? @{/admin/add-product} : @{/admin/update-product}"
+                  th:object="${product}" method="post" enctype="multipart/form-data">
+
+                <input type="hidden" th:field="*{id}"/>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label>Name:</label>
+                        <input type="text" class="form-control" th:field="*{name}" required/>
+                    </div>
+                    <div class="col">
+                        <label>Category:</label>
+                        <select class="form-select" th:field="*{category}" required>
+                            <option value="">-- Select Category --</option>
+                            <optgroup label="Categories">
+                                <option value="Balcony Garden">Balcony Garden</option>
+                                <option value="Living Garden">Living Garden</option>
+                                <option value="Terrace Garden">Terrace Garden</option>
+                                <option value="Kitchen Garden">Kitchen Garden</option>
+                            </optgroup>
+                            <optgroup label="Planters">
+                                <option value="Resin Pots">Resin Pots</option>
+                                <option value="Self Watering Pots">Self Watering Pots</option>
+                                <option value="Plastic Pots">Plastic Pots</option>
+                                <option value="Ceramic Pots">Ceramic Pots</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label>Price:</label>
+                        <input type="number" step="0.01" class="form-control" th:field="*{price}" required/>
+                    </div>
+                    <div class="col">
+                        <label>Label (e.g. New Launch):</label>
+                        <select class="form-select" th:field="*{label}" required>
+                            <option value="">-- Select Label --</option>
+                            <option value="Best Seller">Best Seller</option>
+                            <option value="New Launch">New Launch</option>
+                            <option value="Indoor">Indoor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                    <!-- 🔵 Image Preview -->
+                    <div class="col-md-6 text-center">
+                        <img id="previewImage"
+                             th:src="${product.imageData != null} ? @{/product/image/{id}(id=${product.id})} : @{/images/placeholder.png}"
+                             class="rounded-circle shadow p-1"
+                             width="150"
+                             height="150"
+                             alt="Preview"/>
+                    </div>
+
+                    <!-- 🟢 Upload Image -->
+                    <div class="col-md-6">
+                        <label>Upload Image:</label>
+                        <input type="file" name="imageFile" class="form-control"
+                               accept="image/png, image/jpeg, image/jpg"
+                               onchange="previewSelectedImage(this)"/>
+                        <small th:if="${product.id != null}" class="text-muted">Leave empty to keep existing image.</small>
+                    </div>
+
+                    <div class="text-end mt-3">
+                        <button type="submit" class="btn btn-success w-50"
+                                th:text="${product.id == null} ? 'Add' : 'Update'"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ✅ Product List Table + Filters -->
+    <div class="card">
+        <div class="card-header bg-dark text-white text-center">
+            <h5>🪴 All Products</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="p-3 d-flex flex-wrap gap-3">
+                <input type="text" id="productSearch" class="form-control" placeholder="Search by name, category, label..." style="max-width: 60%;">
+                <select id="categoryFilter" class="form-select" style="max-width: 200px;">
+                    <option value="">All Categories</option>
+                    <option value="Balcony Garden">Balcony Garden</option>
+                    <option value="Living Garden">Living Garden</option>
+                    <option value="Terrace Garden">Terrace Garden</option>
+                    <option value="Kitchen Garden">Kitchen Garden</option>
+                    <option value="Resin Pots">Resin Pots</option>
+                    <option value="Self Watering Pots">Self Watering Pots</option>
+                    <option value="Plastic Pots">Plastic Pots</option>
+                    <option value="Ceramic Pots">Ceramic Pots</option>
+                </select>
+                <select id="labelFilter" class="form-select" style="max-width: 200px;">
+                    <option value="">All Labels</option>
+                    <option value="Best Seller">Best Seller</option>
+                    <option value="New Launch">New Launch</option>
+                    <option value="Indoor">Indoor</option>
+                </select>
+            </div>
+
+            <table class="table table-bordered table-striped m-0">
+                <thead class="table-dark text-center">
+                <tr class="align-middle">
+                    <th>#</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Label</th>
+                    <th>Price</th>
+                    <th width="150">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="prod, stat : ${products}" class="text-center align-middle">
+                    <td th:text="${stat.count}">1</td>
+                    <td>
+                        <img class="rounded-circle mx-auto d-block"
+                             th:if="${prod.imageData != null}"
+                             th:src="@{'/product/image/' + ${prod.id}}"
+                             width="60" height="60"/>
+                        <span th:if="${prod.imageData == null}" class="text-muted">No Image</span>
+                    </td>
+                    <td th:text="${prod.name}">Name</td>
+                    <td th:text="${prod.category}">Category</td>
+                    <td th:text="${prod.label}">Label</td>
+                    <td>₹ <span th:text="${prod.price}">0.00</span></td>
+                    <td>
+                        <a th:href="@{'/admin/edit/' + ${prod.id}}" class="btn btn-sm btn-warning">Edit</a>
+                        <a th:href="@{'/admin/delete/' + ${prod.id}}"
+                           onclick="return confirm('Delete this product?')"
+                           class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                <tr th:if="${products.size() == 0}">
+                    <td colspan="7" class="text-center text-muted">No products available.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ JS for Preview & Filtering -->
+<script>
+    function previewSelectedImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('previewImage').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("productSearch");
+        const categoryFilter = document.getElementById("categoryFilter");
+        const labelFilter = document.getElementById("labelFilter");
+        const tableRows = document.querySelectorAll("tbody tr");
+
+        function filterTable() {
+            const search = searchInput.value.toLowerCase();
+            const category = categoryFilter.value;
+            const label = labelFilter.value;
+
+            tableRows.forEach(row => {
+                const name = row.children[2]?.textContent.toLowerCase();
+                const cat = row.children[3]?.textContent;
+                const lbl = row.children[4]?.textContent;
+
+                const matchSearch = !search || name.includes(search) || cat.toLowerCase().includes(search) || lbl.toLowerCase().includes(search);
+                const matchCategory = !category || cat === category;
+                const matchLabel = !label || lbl === label;
+
+                row.style.display = (matchSearch && matchCategory && matchLabel) ? "" : "none";
+            });
+        }
+
+        searchInput.addEventListener("input", filterTable);
+        categoryFilter.addEventListener("change", filterTable);
+        labelFilter.addEventListener("change", filterTable);
+    });
+</script>
+
+</body>
+</html>
